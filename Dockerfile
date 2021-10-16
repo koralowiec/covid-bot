@@ -22,4 +22,4 @@ ENV PATH="/home/bot/.local/bin:${PATH}"
 
 RUN pip install py-mon colorama watchdog
 
-CMD ["pymon", "main.py"]
+CMD ["pymon", "--all", "./main.py"]
