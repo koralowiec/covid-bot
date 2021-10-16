@@ -1,0 +1,9 @@
+version: '2.4'
+services:
+  bot:
+    build:
+      target: dev            
+    volumes:
+      - ./:/bot          
+    env_file:
+      - .env
