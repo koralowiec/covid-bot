@@ -1,0 +1,23 @@
+name: Publish Docker image to GitHub Container Registry
+on: 
+  push:
+      branches:
+        - main
+
+jobs:
+  build_and_push:
+    name: Build and push
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out the repo
+        uses: actions/checkout@v2      
+      - uses: mr-smithers-excellent/docker-build-push@v5
+        name: Build & push Docker image
+        with:
+          image: covid-bot    
+          target: base
+          tags: v1, latest
+          registry: ghcr.io
+          dockerfile: Dockerfile
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
