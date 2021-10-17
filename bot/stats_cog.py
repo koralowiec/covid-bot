@@ -23,7 +23,7 @@ Ozdrowień dziennie: {avg_daily_recovered}
         self.bot = bot
 
     @classmethod
-    def get_message_for_record(cls, record):
+    def prepare_message_for_record(cls, record):
         return cls.record_message_template.format(
             date=record.date,
             daily_infected=record.daily.infected,
@@ -40,7 +40,7 @@ Ozdrowień dziennie: {avg_daily_recovered}
         )
 
     @classmethod
-    def get_message_with_average_stats(cls, records):
+    def prepare_message_with_average_stats(cls, records):
         avg_infected, num_of_records = cls.get_average_of("infected", records)
         avg_dead, _ = cls.get_average_of("dead", records)
         avg_recovered, _ = cls.get_average_of("recovered", records)
@@ -55,14 +55,21 @@ Ozdrowień dziennie: {avg_daily_recovered}
     @commands.command(name="last")
     async def get_the_latest_record(self, ctx):
         record = RecordService.get_the_latest_record()
-        msg = self.get_message_for_record(record)
+        msg = self.prepare_message_for_record(record)
+        await ctx.send(msg)
+
+    @commands.command(name="avg")
+    async def get_average_for_last_7_days(self, ctx):
+        records = RecordService.get_n_latest_records()
+        msg = self.prepare_message_with_average_stats(records)
+
         await ctx.send(msg)
 
     @commands.command(name="week")
     async def get_records_for_last_7_days(self, ctx):
         records = RecordService.get_n_latest_records()
-        msg = self.get_message_with_average_stats(records)
+        msg = self.prepare_message_with_average_stats(records)
 
         for record in records:
-            msg = msg + self.get_message_for_record(record)
+            msg = msg + self.prepare_message_for_record(record)
         await ctx.send(msg)
