@@ -14,7 +14,8 @@ class NumberOfCases(EmbeddedDocument):
     recovered = IntField()
 
 
-class Records(Document):
+class Record(Document):
+    meta = {"collection": "records"}
     date_of_scrape = DateTimeField(required=True)
     total = EmbeddedDocumentField(NumberOfCases)
     daily = EmbeddedDocumentField(NumberOfCases)
