@@ -6,6 +6,7 @@ from mongoengine import (
     EmbeddedDocumentField,
     StringField,
 )
+from mongoengine.fields import BooleanField, LongField
 
 
 class NumberOfCases(EmbeddedDocument):
@@ -20,3 +21,10 @@ class Record(Document):
     total = EmbeddedDocumentField(NumberOfCases)
     daily = EmbeddedDocumentField(NumberOfCases)
     date = StringField()
+
+
+class PushMessage(Document):
+    meta = {"collection": "push_messages"}
+    guild = LongField(required=True)
+    channel = LongField(required=True)
+    is_active = BooleanField(required=True, default=True)
