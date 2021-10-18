@@ -25,6 +25,8 @@ class PushMessageCog(commands.Cog):
         if self.current_the_latest_record.id == the_latest_record.id:
             return
 
+        self.current_the_latest_record = the_latest_record
+
         await PushMessageService.send_message_with_new_record_to_active_channels(
             self.bot
         )
