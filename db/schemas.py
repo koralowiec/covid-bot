@@ -6,13 +6,19 @@ from mongoengine import (
     EmbeddedDocumentField,
     StringField,
 )
-from mongoengine.fields import BooleanField, LongField
+from mongoengine.fields import BooleanField, EmbeddedDocumentListField, LongField
 
 
 class NumberOfCases(EmbeddedDocument):
     dead = IntField()
     infected = IntField()
     recovered = IntField()
+    tested = StringField()
+
+
+class VoivodeshipRecord(EmbeddedDocument):
+    name = StringField(required=True)
+    daily = EmbeddedDocumentField(NumberOfCases)
 
 
 class Record(Document):
@@ -21,6 +27,7 @@ class Record(Document):
     total = EmbeddedDocumentField(NumberOfCases)
     daily = EmbeddedDocumentField(NumberOfCases)
     date = StringField()
+    voivodeships = EmbeddedDocumentListField(VoivodeshipRecord)
 
 
 class PushMessage(Document):
