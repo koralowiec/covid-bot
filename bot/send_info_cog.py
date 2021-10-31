@@ -31,26 +31,34 @@ class PushMessageCog(commands.Cog):
             self.bot
         )
 
-    @commands.command(name="here")
+    @commands.command(name="here", aliases=["tutaj"])
     async def add_channel_to_be_messaged(self, ctx):
         """Bot will send a message on this channel, when the new statistics appear.
-        Pushing must be enabled: `!covid on`"""
+        Pushing must be enabled: `!covid on`.
+        ---
+        Po pojawieniu się nowych statystyk, bot opublikuje wiadomość na kanale, na którym wywołano to polecnie po raz ostatni.
+        Publikacja wiadomości musi być włączona: `!covid włącz`"""
 
         PushMessageService.enable_pushing_to_channel(ctx.guild.id, ctx.channel.id)
 
-    @commands.command(name="on")
+    @commands.command(name="on", aliases=["włącz"])
     async def activate_pushing(self, ctx):
         """Activate pushing a message with new statistics.
-        You need to choose the channel where the message will be send (`!covid here`)"""
+        You need to choose the channel where the message will be send (`!covid here`).
+        ---
+        Aktywuje publikowanie wiadomości z nowymi statystykami.
+        Do działania wymaga wybrania kanału, na którym wiadomość będzie publikowana (`!covid tutaj`)."""
 
         try:
             PushMessageService.activate_pushing(ctx.guild.id)
         except PushMessageIsNotDefinedForThisGuild as pme:
             await ctx.send(pme.message)
 
-    @commands.command(name="off")
+    @commands.command(name="off", aliases=["wyłącz"])
     async def deactivate_pushing(self, ctx):
-        """Deactivate pushing a message with new statistics."""
+        """Deactivate pushing a message with new statistics.
+        ---
+        Wyłącza publikowanie wiadomości z nowymi statystykami."""
 
         try:
             PushMessageService.deactivate_pushing(ctx.guild.id)
