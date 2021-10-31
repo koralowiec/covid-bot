@@ -1,4 +1,4 @@
-name: Publish Docker image to GitHub Container Registry
+name: Publish Docker image with main tag to GitHub Container Registry
 on: 
   push:
       branches:
@@ -16,7 +16,7 @@ jobs:
         with:
           image: covid-bot    
           target: base
-          tags: v1, latest
+          tags: main, latest
           registry: ghcr.io
           dockerfile: Dockerfile
           username: ${{ github.actor }}
