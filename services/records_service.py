@@ -1,4 +1,5 @@
-from typing import Tuple
+from typing import List, Tuple
+from tabulate import tabulate
 
 from db.schemas import Record
 
@@ -17,6 +18,19 @@ Zakażeń dziennie: {avg_daily_infected}
 Zgonów dziennie: {avg_daily_dead}
 Ozdrowień dziennie: {avg_daily_recovered}
 """
+
+    voivodeship_table_headers = [
+        "Województwo",
+        "Liczba\nZakażonych",
+        "Liczba\ntestów",
+        "Pozytywne\ntesty [%]",
+    ]
+
+    voivodeship_table_message_template = """Dzienne przyrosty dla województw z {date}:
+```
+{msg_table}
+```
+        """
 
     @staticmethod
     def get_the_latest_record():
@@ -75,3 +89,28 @@ Ozdrowień dziennie: {avg_daily_recovered}
             msg = msg + cls.prepare_message_for_record(record)
 
         return msg
+
+    @classmethod
+    def get_table_message_for_latest_record_per_voivodeship(cls) -> str:
+        record: Record = cls.get_the_latest_record()
+
+        table: List[Tuple[str, int, int, float]] = []
+        for v_stats in record.voivodeships:  # type: ignore
+            infected_to_tested_percent = round(
+                v_stats.daily.infected / v_stats.daily.tested * 100, 2
+            )
+
+            table.append(
+                (
+                    v_stats.name,
+                    v_stats.daily.infected,
+                    v_stats.daily.tested,
+                    infected_to_tested_percent,
+                )
+            )
+
+        msg_table = tabulate(table, cls.voivodeship_table_headers, tablefmt="simple")
+        msg_table = cls.voivodeship_table_message_template.format(
+            date=record.date, msg_table=msg_table
+        )
+        return msg_table

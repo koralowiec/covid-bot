@@ -28,3 +28,10 @@ class StatsCog(commands.Cog):
 
         msg = RecordService.get_message_for_7_days()
         await ctx.send(msg)
+
+    @commands.command(name="v", aliases=["voivodeships", "w", "województwa", "woj"])
+    async def get_the_latest_record_per_voiovdeship(self, ctx):
+        """Sends a message with statistics as a table, which contains information per voivodeship"""
+
+        msg = RecordService.get_table_message_for_latest_record_per_voivodeship()
+        await ctx.send(msg)
