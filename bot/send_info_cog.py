@@ -1,10 +1,10 @@
 from discord.ext import commands, tasks
 
-from db.push_message_service import (
+from services.push_message_service import (
     PushMessageIsNotDefinedForThisGuild,
     PushMessageService,
 )
-from db.records_service import RecordService
+from services.records_service import RecordService
 
 
 class PushMessageCog(commands.Cog):

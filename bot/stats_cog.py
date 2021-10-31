@@ -1,6 +1,6 @@
 from discord.ext import commands
 
-from db.records_service import RecordService
+from services.records_service import RecordService
 
 
 class StatsCog(commands.Cog):

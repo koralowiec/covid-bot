@@ -1,4 +1,4 @@
-from db.records_service import RecordService
+from services.records_service import RecordService
 from db.schemas import PushMessage
 
 
