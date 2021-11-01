@@ -20,7 +20,7 @@ Ozdrowień dziennie: {avg_daily_recovered}
 """
 
     voivodeship_table_headers = [
-        "Województwo",
+        "\nWojewództwo",
         "Liczba\nZakażonych",
         "Liczba\ntestów",
         "Pozytywne\ntesty [%]",
@@ -34,11 +34,11 @@ Ozdrowień dziennie: {avg_daily_recovered}
 
     @staticmethod
     def get_the_latest_record():
-        return Record.objects.order_by("-date").first()
+        return Record.objects.order_by("-date_of_scrape").first()
 
     @staticmethod
     def get_n_latest_records(n: int = 7):
-        return Record.objects.order_by("-date").limit(n)
+        return Record.objects.order_by("-date_of_scrape").limit(n)
 
     @classmethod
     def prepare_message_for_record(cls, record):
@@ -73,6 +73,8 @@ Ozdrowień dziennie: {avg_daily_recovered}
     @classmethod
     def get_message_for_the_latest_record(cls):
         record = cls.get_the_latest_record()
+        print(record.date)
+        print(record.id)
         return cls.prepare_message_for_record(record)
 
     @classmethod
