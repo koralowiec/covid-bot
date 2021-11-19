@@ -6,6 +6,6 @@ services:
     volumes:
       - ./:/bot          
     env_file:
-      - .env          
+      - .dev.env
     environment:
       - PREFIX=!dev
