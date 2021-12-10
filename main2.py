@@ -16,11 +16,10 @@ if __name__ == "__main__":
         exit()
 
     Database.connect()
-    
+
     y = ChartService
-    #usage
-    #y.plot_latest_voivodeships()
+    # usage
+    y.plot_n_latest_records(4)
     #  voivodeships_name = voivodeships
     #  config_option is only available if voivodeships_name is empty. config_option: total or daily, default on total
-    #y.plot_n_latest_records(3,'voivodeships_name','config_option')
-    
+    # y.plot_n_latest_records(3,'voivodeships_name','config_option')
