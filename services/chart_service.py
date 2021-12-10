@@ -42,19 +42,48 @@ class ChartService:
             tab_for_append_element.append(0)
         return tab_for_append_element
 
+    @staticmethod
+    def sign_draw_chart(
+        labels,
+        legend: str = [],
+        to_group_1: int = [],
+        to_group_2: int = [],
+        to_group_3: int = [],
+    ):
+        fig, ax = plt.subplots()
+        ax.ticklabel_format(style="plain")
+        if to_group_1:
+            plt.plot(labels, to_group_1, "go")
+        if to_group_2:
+            plt.plot(labels, to_group_2, "b<")
+        if to_group_3:
+            plt.plot(labels, to_group_2, "r>")
+
+        plt.xticks(rotation=90)
+        plt.legend(legend)
+        return plt.savefig("plot.png", bbox_inches="tight")
+
     @classmethod
-    def plot_latest_voivodeships(cls):
+    def plot_latest_voivodeships(cls, chart: str = ""):
+
         record = cls.record_service.get_the_latest_record()
         labels = [name.name for name in record.voivodeships]
         infected = [
             daily_infected.daily.infected for daily_infected in record.voivodeships
         ]
         tested = [daily_tested.daily.tested for daily_tested in record.voivodeships]
-        return cls.grouped_bar_chart(labels, cls.config[0], infected, tested)
+        if chart:
+            return cls.sign_draw_chart(labels, cls.config[0], infected, tested)
+        else:
+            return cls.grouped_bar_chart(labels, cls.config[0], infected, tested)
 
     @classmethod
     def plot_n_latest_records(
-        cls, n: int = 7, voivodeships: str = None, config: str = "total"
+        cls,
+        n: int = 7,
+        voivodeships: str = None,
+        chart: str = "",
+        config: str = "total",
     ):
         record = cls.record_service.get_n_latest_records(n)
         labels = [
@@ -79,11 +108,19 @@ class ChartService:
             # Format the value
             infected = cls.get_list_element(infected_to_format, labels)
             tested = cls.get_list_element(tested_to_format, labels)
-            return cls.grouped_bar_chart(labels, cls.config[0], infected, tested)
+            if chart:
+                return cls.sign_draw_chart(labels, cls.config[0], infected, tested)
+            else:
+                return cls.grouped_bar_chart(labels, cls.config[0], infected, tested)
         else:
             dead = [d_dead[config].dead for d_dead in record]
             infected = [f_infected[config].infected for f_infected in record]
             recovered = [r_recovered[config].recovered for r_recovered in record]
-            return cls.grouped_bar_chart(
-                labels, cls.config[1], dead, infected, recovered
-            )
+            if chart:
+                return cls.sign_draw_chart(
+                    labels, cls.config[1], dead, infected, recovered
+                )
+            else:
+                return cls.grouped_bar_chart(
+                    labels, cls.config[1], dead, infected, recovered
+                )
