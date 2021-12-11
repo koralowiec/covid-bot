@@ -1,5 +1,6 @@
 import matplotlib.pyplot as plt
 import numpy as np
+from typing import List
 from services.records_service import RecordService
 from datetime import datetime
 
@@ -11,10 +12,10 @@ class ChartService:
     @staticmethod
     def grouped_bar_chart(
         labels,
-        legend: str = [],
-        to_group_1: int = [],
-        to_group_2: int = [],
-        to_group_3: int = [],
+        legend: List[str] = [],
+        to_group_1: List[int] = [],
+        to_group_2: List[int] = [],
+        to_group_3: List[int] = [],
     ):
         x = np.arange(len(labels))
         width = 0.3
@@ -45,10 +46,10 @@ class ChartService:
     @staticmethod
     def sign_draw_chart(
         labels,
-        legend: str = [],
-        to_group_1: int = [],
-        to_group_2: int = [],
-        to_group_3: int = [],
+        legend: List[str] = [],
+        to_group_1: List[int] = [],
+        to_group_2: List[int] = [],
+        to_group_3: List[int] = [],
     ):
         fig, ax = plt.subplots()
         ax.ticklabel_format(style="plain")
@@ -112,15 +113,14 @@ class ChartService:
                 return cls.sign_draw_chart(labels, cls.config[0], infected, tested)
             else:
                 return cls.grouped_bar_chart(labels, cls.config[0], infected, tested)
+        dead = [d_dead[config].dead for d_dead in record]
+        infected = [f_infected[config].infected for f_infected in record]
+        recovered = [r_recovered[config].recovered for r_recovered in record]
+        if chart:
+            return cls.sign_draw_chart(
+                labels, cls.config[1], dead, infected, recovered
+            )
         else:
-            dead = [d_dead[config].dead for d_dead in record]
-            infected = [f_infected[config].infected for f_infected in record]
-            recovered = [r_recovered[config].recovered for r_recovered in record]
-            if chart:
-                return cls.sign_draw_chart(
-                    labels, cls.config[1], dead, infected, recovered
-                )
-            else:
-                return cls.grouped_bar_chart(
-                    labels, cls.config[1], dead, infected, recovered
-                )
+            return cls.grouped_bar_chart(
+                labels, cls.config[1], dead, infected, recovered
+            )
