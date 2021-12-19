@@ -1,4 +1,6 @@
+from discord import File
 from discord.ext import commands
+from services.chart_service import ChartService
 
 from services.records_service import RecordService
 
@@ -43,3 +45,44 @@ class StatsCog(commands.Cog):
 
         msg = RecordService.get_table_message_for_latest_record_per_voivodeship()
         await ctx.send(msg)
+
+    @commands.command(name="chart", aliases=["wykres"])
+    async def get_charts(self, ctx, chart_type: int, *args):
+        """Show a chart.
+        Types of chart:
+        1 - daily (`!covid chart 1 number_of_days`)
+        2 - daily for a voivodeship (`!covid chart 2 voivodeship_name`)
+        3 - total (`!covid chart 3 number_of_days`)
+        ---
+        pl"""
+
+        if chart_type == 1:
+            number_of_days = 7
+
+            if len(args) > 0:
+                number_of_days = int(args[0])
+
+            ChartService.plot_n_latest_records(config="daily", n=number_of_days)
+        elif chart_type == 2:
+            voivodeship = args[0]
+
+            ChartService.plot_n_latest_records(
+                config="daily", n=7, voivodeship_name=voivodeship
+            )
+        elif chart_type == 3:
+            number_of_days = 30
+
+            if len(args) > 0:
+                number_of_days = int(args[0])
+
+            ChartService.plot_n_latest_records(
+                config="total", n=number_of_days, chart=True
+            )
+        else:
+            await ctx.send("Not valid type of chart.\nNiepoprawny typ wykresu.")
+            return
+
+        with open("plot.png", "rb") as file_chart:
+            file = File(file_chart, filename="plot.png")
+
+        await ctx.send(file=file)

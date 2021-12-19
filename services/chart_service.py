@@ -19,7 +19,7 @@ class ChartService:
     ):
         x = np.arange(len(labels))
         width = 0.3
-        fig, ax = plt.subplots()
+        _, ax = plt.subplots()
         if to_group_1:
             plt.bar(x - 0.2, to_group_1, width, color="cyan")
         if to_group_2:
@@ -51,7 +51,7 @@ class ChartService:
         to_group_2: List[int] = [],
         to_group_3: List[int] = [],
     ):
-        fig, ax = plt.subplots()
+        _, ax = plt.subplots()
         ax.ticklabel_format(style="plain")
         if to_group_1:
             plt.plot(labels, to_group_1, "go")
@@ -82,30 +82,34 @@ class ChartService:
     def plot_n_latest_records(
         cls,
         n: int = 7,
-        voivodeships: str = None,
-        chart: str = "",
-        config: str = "total",
+        voivodeship_name: str = None,
+        chart: bool = False,
+        config: str = "daily",
     ):
-        record = cls.record_service.get_n_latest_records(n)
+        records = cls.record_service.get_n_latest_records(n)
+        records = [r for r in records]
+        records.reverse()
         labels = [
             datetime.strptime(date.date, "%d.%m.%Y %H:%M").strftime("%m/%d/%Y")
-            for date in record
+            for date in records
         ]
-        if voivodeships:
+
+        if voivodeship_name:
             infected_to_format = [
                 [
-                    x.daily["infected"] if x.name == voivodeships else 0
+                    x.daily["infected"] if x.name == voivodeship_name else 0
                     for x in voievode.voivodeships
                 ]
-                for voievode in record
+                for voievode in records
             ]
             tested_to_format = [
                 [
-                    x.daily["tested"] if x.name == voivodeships else 0
+                    x.daily["tested"] if x.name == voivodeship_name else 0
                     for x in voievode.voivodeships
                 ]
-                for voievode in record
+                for voievode in records
             ]
+
             # Format the value
             infected = cls.get_list_element(infected_to_format, labels)
             tested = cls.get_list_element(tested_to_format, labels)
@@ -113,13 +117,13 @@ class ChartService:
                 return cls.sign_draw_chart(labels, cls.config[0], infected, tested)
             else:
                 return cls.grouped_bar_chart(labels, cls.config[0], infected, tested)
-        dead = [d_dead[config].dead for d_dead in record]
-        infected = [f_infected[config].infected for f_infected in record]
-        recovered = [r_recovered[config].recovered for r_recovered in record]
+
+        dead = [d_dead[config].dead for d_dead in records]
+        infected = [f_infected[config].infected for f_infected in records]
+        recovered = [r_recovered[config].recovered for r_recovered in records]
+
         if chart:
-            return cls.sign_draw_chart(
-                labels, cls.config[1], dead, infected, recovered
-            )
+            return cls.sign_draw_chart(labels, cls.config[1], dead, infected, recovered)
         else:
             return cls.grouped_bar_chart(
                 labels, cls.config[1], dead, infected, recovered
