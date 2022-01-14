@@ -3,6 +3,7 @@ services:
   bot:
     build:
       target: dev            
+      context: .
     volumes:
       - ./:/bot          
     env_file:
