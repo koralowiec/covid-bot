@@ -37,7 +37,7 @@ class ChartService:
         tab_for_append_element = []
         for first_layer in list:
             for second_layer in first_layer:
-                if second_layer is not 0:
+                if second_layer != 0:
                     tab_for_append_element.append(second_layer)
         if len(tab_for_append_element) != len(labels):
             tab_for_append_element.append(0)

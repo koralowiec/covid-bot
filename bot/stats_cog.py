@@ -54,7 +54,11 @@ class StatsCog(commands.Cog):
         2 - daily for a voivodeship (`!covid chart 2 voivodeship_name`)
         3 - total (`!covid chart 3 number_of_days`)
         ---
-        pl"""
+        Przedstawia wykres.
+        Rodzaje wykresów:
+        1 - dzienne statystyki (`!covid chart 1 liczba_dni`)
+        2 - dzienne dla województwa (`!covid chart 2 województwo`)
+        3 - sumaryczne statystyki (`!covid chart 3 liczba_dni`)"""
 
         if chart_type == 1:
             number_of_days = 7
